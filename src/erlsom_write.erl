@@ -74,7 +74,7 @@ struct2xml(Struct,
   %% value == undefined -> no value provided
   %% etc.
 
-   debug(CurrentValue),
+ %%  debug(CurrentValue),
 
   if 
     (Max == 1) and (Mixed /= true) ->  
