@@ -89,6 +89,10 @@ convertPCData(Text, Type, Namespaces, NamespaceMapping) ->
       end;
     float ->
       list_to_float(Text);
+      nil ->
+	  io:format("found nil"),
+	  list_to_atom(Text);
+	  
     qname ->
       %% qname has form prefix:localname (or, if there is no prefix: localname)
       %% split the two parts, look up the prefix to find the uri, and put it into 

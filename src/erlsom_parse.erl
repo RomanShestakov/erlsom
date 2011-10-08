@@ -1226,14 +1226,14 @@ processAttributes(_Attributes = [#attribute{localName=LocalName, uri=Uri, value=
       end,
       %% see whether the attribute is 'special'
       case {LocalName, Uri} of
-        {"nil", "http://www.w3.org/2001/XMLSchema-instance"} ->
+        {"nil", "http://www.w3.org/2001/XMLSchema-instance"} -> ok;
 	%% see whether the element is 'nillable'
-	  case TypeDef#type.nillable of
-	    true ->
-	      ok;
-	    _ ->
-              throw({error, "Unexpected attribute: " ++ LocalName})
-	  end;
+%% 	  case TypeDef#type.nillable of
+%% 	    true ->
+%% 	      ok;
+%% 	    _ ->
+%%               throw({error, "Unexpected attribute: " ++ LocalName})
+%% 	  end;
 
         {"schemaLocation", "http://www.w3.org/2001/XMLSchema-instance"} ->
           ok;

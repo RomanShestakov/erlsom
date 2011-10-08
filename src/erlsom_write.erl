@@ -32,8 +32,8 @@
 -include("erlsom_parse.hrl").
 -include("erlsom.hrl").
 
-%% debug(Text) ->
-  %% io:format("write: ~p\n", [Text]).
+ debug(Text) ->
+   io:format("write: ~p\n", [Text]).
 
 
 %% Returns the XML document. {ok, Document}
@@ -74,7 +74,7 @@ struct2xml(Struct,
   %% value == undefined -> no value provided
   %% etc.
 
-  %% debug(CurrentValue),
+   debug(CurrentValue),
 
   if 
     (Max == 1) and (Mixed /= true) ->  
@@ -562,7 +562,7 @@ printValue(CurrentValue, Alternatives, Namespaces,
               throw({error, "Wrong Type"})
           end,
 	  printElement(TextValue, Tag, RealElement, Namespaces, DeclaredNamespaces);
-	_Else -> 
+	Else -> 
           throw({error, "Type of value (integer) does not match model"})
       end;
 
@@ -585,7 +585,7 @@ printValue(CurrentValue, Alternatives, Namespaces,
       case lists:keysearch({'#PCDATA', bool}, #alt.tp, Alternatives) of
         {value, #alt{tag = Tag, rl = RealElement}} ->
           TextValue = try atom_to_list(CurrentValue) 
-          catch 
+	   catch 
             _AnyClass:_Any ->
               throw({error, "Wrong Type"})
           end,
@@ -593,9 +593,32 @@ printValue(CurrentValue, Alternatives, Namespaces,
 	_Else -> 
           throw({error, "Type of value (atom) does not match model"})
       end;
+  
+%%     _F when CurrentValue == nil ->
+%% 	  %% is value nillable
+%% 	  TextValue = atom_to_list(CurrentValue),
+%% 	  %%printElement(TextValue, Tag, RealElement, Namespaces, DeclaredNamespaces);
+%% 	  printElement(TextValue, 'Tag', 'NIL', Namespaces, DeclaredNamespaces);
+
+    _F when CurrentValue ==  nil ->
+         TextValue = atom_to_list(CurrentValue), 
+     case lists:keysearch({'#PCDATA', nil}, #alt.tp, Alternatives) of
+        {value, #alt{tag = Tag, rl = RealElement}} ->
+          %%TextValue = try atom_to_list(CurrentValue) 
+%% 	   catch 
+%%             _AnyClass:_Any ->
+%%               throw({error, "Wrong Type"})
+%%           end,
+	  printElement(TextValue, Tag, RealElement, Namespaces, DeclaredNamespaces);
+	_Else -> 
+	     printElement(TextValue, 'Tag', nil, "http://www.w3.org/2001/XMLSchema-instance", DeclaredNamespaces)
+          %%throw({error, "Type of value (nil) does not match model"})
+      end;
+
+
 
     _Else -> 
-      throw({error, "Type of value not valid for XML structure"})
+      throw({error, "Type of value not valid for XML structure", CurrentValue})
 
   end.
 
